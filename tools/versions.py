@@ -145,8 +145,10 @@ def update_wrap(name: str, old_ver: str, new_ver: str) -> None:
     if old_ver.count('.') == 2 and new_ver.count('.') == 2:
         # some projects use URLs like .../projname/2.60/projname-2.60.3.tar.gz
         # this substitution must be done last
+        # only replace if it starts with a slash to avoid false matches of subsets of versions
+        # e.g. old_ver=1.0.0 and new_ver=1.1.0 should not change the last 1.0 in 1.1.0 to 1.1.1
         replacements.append(
-            ('.'.join(old_ver.split('.')[:2]), '.'.join(new_ver.split('.')[:2]))
+            ('/' + '.'.join(old_ver.split('.')[:2]), '/' + '.'.join(new_ver.split('.')[:2]))
         )
     for i, line in enumerate(lines):
         for old, new in replacements:
